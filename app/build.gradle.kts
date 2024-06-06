@@ -49,6 +49,7 @@ android {
 }
 
 dependencies {
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
 //    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")

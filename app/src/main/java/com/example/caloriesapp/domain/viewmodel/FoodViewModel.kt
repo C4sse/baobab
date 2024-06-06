@@ -18,7 +18,7 @@ class FoodViewModel @Inject constructor(private val repository: FoodRepository) 
 
     fun searchFoods(query: String) {
         println(query)
-        println("flex")
+        println("starting flex")
         viewModelScope.launch {
             val response = repository.getFoods(query)
             println("*******************")
