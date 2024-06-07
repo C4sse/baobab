@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,6 +37,7 @@ import com.example.caloriesapp.domain.viewmodel.FoodViewModel
 fun FoodSearchScreen(viewModel: FoodViewModel = viewModel()) {
     var query by remember { mutableStateOf("") }
     val foods by viewModel.foods.observeAsState(emptyList())
+    val focusManager = LocalFocusManager.current
 
     var totalCalories by remember { mutableStateOf(0) }
     val calorieBudget = 1750
@@ -53,7 +55,7 @@ fun FoodSearchScreen(viewModel: FoodViewModel = viewModel()) {
             fontWeight = FontWeight.Bold,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         TextField(
             value = query,
             onValueChange = { query = it },
@@ -71,6 +73,8 @@ fun FoodSearchScreen(viewModel: FoodViewModel = viewModel()) {
         Button(
             onClick = {
                 viewModel.searchFoods(query)
+                query = ""
+                focusManager.clearFocus()
             },
             modifier = Modifier.align(Alignment.End),
             colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)

@@ -26,7 +26,10 @@ class FoodViewModel @Inject constructor(private val repository: FoodRepository) 
             println(response.body()?.items)
             println("*******************")
             if (response.isSuccessful) {
-                _foods.value = response.body()?.items
+                response.body()?.items?.let { newFoods ->
+                    val currentFoods = _foods.value ?: emptyList()
+                    _foods.value = currentFoods + newFoods
+                }
                 println("flex22")
                 println("flex22")
             }
