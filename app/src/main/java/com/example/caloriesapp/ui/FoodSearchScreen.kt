@@ -2,6 +2,7 @@ package com.example.caloriesapp.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -56,30 +57,36 @@ fun FoodSearchScreen(viewModel: FoodViewModel = viewModel()) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Spacer(modifier = Modifier.height(20.dp))
-        TextField(
-            value = query,
-            onValueChange = { query = it },
-            label = { Text("Enter food") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.White, shape = MaterialTheme.shapes.small)
-                .padding(8.dp),
-            colors = TextFieldDefaults.textFieldColors(
-                backgroundColor = Color.White,
-                focusedIndicatorColor = MaterialTheme.colors.primary
+        Box(modifier = Modifier.fillMaxWidth()) {
+            TextField(
+                value = query,
+                onValueChange = { query = it },
+                label = { Text("Enter food") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White, shape = MaterialTheme.shapes.medium)
+                    .padding(0.dp),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.White,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent
+                )
             )
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(
-            onClick = {
-                viewModel.searchFoods(query)
-                query = ""
-                focusManager.clearFocus()
-            },
-            modifier = Modifier.align(Alignment.End),
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary)
-        ) {
-            Text("Search", color = Color.White)
+            Button(
+                onClick = {
+                    viewModel.searchFoods(query)
+                    query = ""
+                    focusManager.clearFocus()
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 8.dp)
+            ) {
+                Text("Search", color = Color.White)
+            }
         }
         Spacer(modifier = Modifier.height(24.dp))
 

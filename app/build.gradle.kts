@@ -51,6 +51,7 @@ android {
 dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.google.dagger:hilt-android:2.51.1")
+    testImplementation("junit:junit:4.12")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
 //    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
@@ -70,12 +71,19 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
-
     implementation("androidx.compose.ui:ui:1.6.7")
     implementation("androidx.compose.material:material:1.6.7")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.1")
     implementation("androidx.activity:activity-compose:1.9.0")
 
+    // Testing dependencies
+    testImplementation ("junit:junit:4.13.2")
+    testImplementation ("org.mockito:mockito-core:3.11.2")
+    testImplementation ("org.mockito:mockito-inline:3.11.2")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
+    testImplementation ("androidx.arch.core:core-testing:2.1.0") // Add this dependency
+    androidTestImplementation ("androidx.compose.ui:ui-test-junit4:1.0.5")
+    debugImplementation ("androidx.compose.ui:ui-test-manifest:1.0.5")
 }
 
 kapt {
