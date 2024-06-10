@@ -1,6 +1,5 @@
 package com.example.caloriesapp.domain.viewmodel
 
-//import androidx.compose.ui.window.application
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -81,6 +80,15 @@ class FoodViewModel @Inject constructor(
         viewModelScope.launch {
             clearFoods(this@FoodViewModel.context)
             _foods.value = emptyList()
+        }
+    }
+
+    fun deleteFood(food: Food) {
+        viewModelScope.launch {
+            val currentFoods = _foods.value ?: emptyList()
+            val updatedFoods = currentFoods.filter { it.id != food.id }
+            _foods.value = updatedFoods
+            saveFoods(context, updatedFoods)
         }
     }
 }

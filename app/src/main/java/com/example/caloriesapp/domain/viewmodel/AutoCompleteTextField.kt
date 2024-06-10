@@ -3,7 +3,7 @@ package com.example.caloriesapp.domain.viewmodel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -44,79 +44,77 @@ fun AutoCompleteTextField(
         expanded = false
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp)
-            .padding(horizontal = 16.dp)
-            .background(Color(0xFFF5F5F5), shape = CircleShape),
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .height(50.dp)
+        .padding(0.dp,0.dp)
+        .background(Color(0xFFF5F5F5), shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.Center, // Center vertically
+            horizontalAlignment = Alignment.Start // Center horizontally if needed
         ) {
-            TextField(
-                value = query,
-                onValueChange = {
-                    onQueryChanged(it)
-                    expanded = true
-                },
-                placeholder = { Text("Search") },
-                modifier = Modifier
-                    .weight(1f)
-                    .background(Color.Transparent),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                ),
-                textStyle = LocalTextStyle.current.copy(fontSize = 16.sp)
-            )
-
-            IconButton(
-                onClick = {
-                    onSuggestionSelected(query)
-                    onQueryChanged("")
-                    expanded = false
-                }
-            ) {
-                Icon(
-                    painter = painterResource(id = android.R.drawable.ic_search_category_default),
-                    contentDescription = "Search Icon",
-                    tint = Color.Black
-                )
-            }
-        }
-        ExposedDropdownMenuBox(
-            expanded = expanded,
-            onExpandedChange = {
-                if (filteredSuggestions.isNotEmpty()) {
-                    expanded = !expanded
-                }
-            }
-        ) {
-            ExposedDropdownMenu(
+            ExposedDropdownMenuBox(
                 expanded = expanded,
-                onDismissRequest = { expanded = false }
+                onExpandedChange = {
+                    if (filteredSuggestions.isNotEmpty()) {
+                        expanded = !expanded
+                    }
+                }
             ) {
-                filteredSuggestions.forEach { suggestion ->
-                    DropdownMenuItem(
-                        onClick = {
-                            onSuggestionSelected(suggestion)
-                            onQueryChanged(suggestion)
-                            expanded = false
+                TextField(
+                    value = query,
+                    onValueChange = {
+                        onQueryChanged(it)
+                        expanded = true
+                    },
+                    placeholder = { Text("Search") },
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(Color.Transparent)
+                        .padding(10.dp, 0.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    textStyle = LocalTextStyle.current.copy(fontSize = 16.sp)
+                )
+                ExposedDropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    filteredSuggestions.forEach { suggestion ->
+                        DropdownMenuItem(
+                            onClick = {
+                                onSuggestionSelected(suggestion)
+                                onQueryChanged(suggestion)
+                                expanded = false
+                            }
+                        ) {
+                            Text(text = suggestion)
                         }
-                    ) {
-                        Text(text = suggestion)
                     }
                 }
             }
+        }
+        IconButton(
+            onClick = {
+                onSuggestionSelected(query)
+                onQueryChanged("")
+                expanded = false
+            },
+            modifier = Modifier.align(Alignment.CenterEnd) // Align the IconButton to the end
+        ) {
+            Icon(
+                painter = painterResource(id = android.R.drawable.ic_search_category_default),
+                contentDescription = "Search Icon",
+                tint = Color.Black
+            )
         }
     }
 }
