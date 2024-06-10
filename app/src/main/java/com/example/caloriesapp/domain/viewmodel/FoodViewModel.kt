@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.caloriesapp.data.model.Food
 import com.example.caloriesapp.data.repository.FoodRepository
+import com.example.caloriesapp.data.storage.getFoods
 import com.example.caloriesapp.data.storage.getSuggestions
+import com.example.caloriesapp.data.storage.saveFoods
 import com.example.caloriesapp.data.storage.saveSuggestions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -36,6 +38,11 @@ class FoodViewModel @Inject constructor(
                 _suggestions.value = savedSuggestions
             }
         }
+        viewModelScope.launch {
+            getFoods(context).collect { savedFoods ->
+                _foods.value = savedFoods
+            }
+        }
     }
 
     fun onQueryChanged(newQuery: String) {
@@ -43,18 +50,19 @@ class FoodViewModel @Inject constructor(
     }
 
     fun searchFoods(query: String) {
-        println(query)
-        println("starting flex")
         viewModelScope.launch {
             val response = repository.getFoods(query)
-            println("*******************")
             println(response.isSuccessful)
             println(response.body()?.items)
-            println("*******************")
             if (response.isSuccessful) {
                 response.body()?.items?.let { newFoods ->
                     val currentFoods = _foods.value ?: emptyList()
                     _foods.value = currentFoods + newFoods
+                    val updatedFoods = currentFoods + newFoods
+                    _foods.value = updatedFoods
+
+                    // Save foods to DataStore
+                    saveFoods(context, updatedFoods)
                 }
 
                 val updatedSuggestions = _suggestions.value.toMutableList().apply {
@@ -65,9 +73,14 @@ class FoodViewModel @Inject constructor(
                     saveSuggestions(context, updatedSuggestions)
                     _suggestions.value = updatedSuggestions
                 }
-                println("flex22")
-                println("flex22")
             }
+        }
+    }
+
+    fun clearFoods(context: Context) {
+        viewModelScope.launch {
+            clearFoods(this@FoodViewModel.context)
+            _foods.value = emptyList()
         }
     }
 }

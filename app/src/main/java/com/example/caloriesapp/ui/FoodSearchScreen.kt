@@ -38,7 +38,6 @@ fun FoodSearchScreen(viewModel: FoodViewModel = hiltViewModel()) {
     val focusManager = LocalFocusManager.current
     var totalCalories by remember { mutableStateOf(0) }
     val calorieBudget = 1750
-
     val query by viewModel.query.collectAsState()
     val suggestions by viewModel.suggestions.collectAsState()
 

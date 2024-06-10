@@ -1,6 +1,4 @@
 package com.example.caloriesapp.domain.viewmodel
-
-//import androidx.compose.runtime.remember
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
