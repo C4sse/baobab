@@ -1,14 +1,19 @@
 package com.example.caloriesapp.domain.viewmodel
+
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ExposedDropdownMenuBox
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
@@ -20,7 +25,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -37,7 +44,55 @@ fun AutoCompleteTextField(
         expanded = false
     }
 
-    Box(modifier = Modifier.fillMaxWidth()) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .padding(horizontal = 16.dp)
+            .background(Color(0xFFF5F5F5), shape = CircleShape),
+        contentAlignment = Alignment.Center
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            TextField(
+                value = query,
+                onValueChange = {
+                    onQueryChanged(it)
+                    expanded = true
+                },
+                placeholder = { Text("Search") },
+                modifier = Modifier
+                    .weight(1f)
+                    .background(Color.Transparent),
+                colors = TextFieldDefaults.textFieldColors(
+                    backgroundColor = Color.Transparent,
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent,
+                    errorIndicatorColor = Color.Transparent
+                ),
+                textStyle = LocalTextStyle.current.copy(fontSize = 16.sp)
+            )
+
+            IconButton(
+                onClick = {
+                    onSuggestionSelected(query)
+                    onQueryChanged("")
+                    expanded = false
+                }
+            ) {
+                Icon(
+                    painter = painterResource(id = android.R.drawable.ic_search_category_default),
+                    contentDescription = "Search Icon",
+                    tint = Color.Black
+                )
+            }
+        }
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = {
@@ -46,25 +101,6 @@ fun AutoCompleteTextField(
                 }
             }
         ) {
-            TextField(
-                value = query,
-                onValueChange = {
-                    onQueryChanged(it)
-                    expanded = true
-                },
-                label = { Text("Enter food") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White, shape = MaterialTheme.shapes.medium)
-                    .padding(0.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                )
-            )
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
@@ -81,19 +117,6 @@ fun AutoCompleteTextField(
                     }
                 }
             }
-        }
-        Button(
-            onClick = {
-                onSuggestionSelected(query)
-                onQueryChanged("")
-                expanded = false
-            },
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = 8.dp)
-        ) {
-            Text("Search", color = Color.White)
         }
     }
 }

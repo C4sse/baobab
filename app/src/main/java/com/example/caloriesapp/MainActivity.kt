@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import com.example.caloriesapp.ui.FoodSearchScreen
+import com.example.caloriesapp.ui.LandingScreen
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -15,7 +15,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             CaloriesAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                    FoodSearchScreen()
+                   // FoodSearchScreen()
+                    LandingScreen()
                 }
             }
         }

@@ -3,7 +3,6 @@ package com.example.caloriesapp.ui
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,12 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
 fun CaloriePieChart(calories: Int, totalCalories: Int) {
-    val color = if (calories <= totalCalories) Color.Green else Color.Red
+    val color = if (calories <= totalCalories) Color(0xFF4CAF50) else Color.Red
     val remainingCalories = totalCalories - calories
 
     Column(
@@ -29,15 +29,11 @@ fun CaloriePieChart(calories: Int, totalCalories: Int) {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Calorie Budget", color = Color.Gray)
-        Text(text = totalCalories.toString(), color = Color.Blue, fontSize = 24.sp)
-        Spacer(modifier = Modifier.height(16.dp))
-
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .height(200.dp)
-                .width(200.dp)
+                .height(100.dp)
+                .width(100.dp)
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawArc(
@@ -56,9 +52,14 @@ fun CaloriePieChart(calories: Int, totalCalories: Int) {
                 )
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = calories.toString(), color = Color.Green, fontSize = 24.sp)
-                Text(text = "Left", color = Color.Gray)
-                Text(text = remainingCalories.toString(), color = Color.Gray, fontSize = 18.sp)
+                Text(
+                    text = remainingCalories.toString(),
+                    color = Color.Black,
+                    fontSize = 25.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(text = "Kcal Left", color = Color.Gray, fontSize = 12.sp)
+
             }
         }
     }
