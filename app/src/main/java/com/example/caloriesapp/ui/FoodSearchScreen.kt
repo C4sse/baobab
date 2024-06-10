@@ -2,7 +2,6 @@ package com.example.caloriesapp.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,14 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
-import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -32,16 +28,20 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.caloriesapp.domain.viewmodel.AutoCompleteTextField
 import com.example.caloriesapp.domain.viewmodel.FoodViewModel
 
 @Composable
 fun FoodSearchScreen(viewModel: FoodViewModel = viewModel()) {
-    var query by remember { mutableStateOf("") }
+//    var query by remember { mutableStateOf("") }
     val foods by viewModel.foods.observeAsState(emptyList())
     val focusManager = LocalFocusManager.current
 
     var totalCalories by remember { mutableStateOf(0) }
     val calorieBudget = 1750
+
+    val query by viewModel.query.collectAsState()
+    val suggestions = listOf("Apple", "Banana", "Orange", "Grapes", "Pineapple")
 
     Column(
         modifier = Modifier
@@ -57,37 +57,16 @@ fun FoodSearchScreen(viewModel: FoodViewModel = viewModel()) {
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )
         Spacer(modifier = Modifier.height(20.dp))
-        Box(modifier = Modifier.fillMaxWidth()) {
-            TextField(
-                value = query,
-                onValueChange = { query = it },
-                label = { Text("Enter food") },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.White, shape = MaterialTheme.shapes.medium)
-                    .padding(0.dp),
-                colors = TextFieldDefaults.textFieldColors(
-                    backgroundColor = Color.White,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent,
-                    errorIndicatorColor = Color.Transparent
-                )
-            )
-            Button(
-                onClick = {
-                    viewModel.searchFoods(query)
-                    query = ""
-                    focusManager.clearFocus()
-                },
-                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .padding(end = 8.dp)
-            ) {
-                Text("Search", color = Color.White)
-            }
+        AutoCompleteTextField(
+                suggestions = suggestions,
+        query = query,
+        onQueryChanged = { viewModel.onQueryChanged(it) },
+        onSuggestionSelected = { selectedFood ->
+            viewModel.searchFoods(selectedFood)
+            viewModel.onQueryChanged("")
+            // clear focus if needed
         }
+        )
         Spacer(modifier = Modifier.height(24.dp))
 
         // Calculate total calories whenever foods change

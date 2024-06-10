@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.caloriesapp.data.model.Food
 import com.example.caloriesapp.data.repository.FoodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,6 +17,12 @@ class FoodViewModel @Inject constructor(private val repository: FoodRepository) 
 
     private val _foods = MutableLiveData<List<Food>>()
     val foods: LiveData<List<Food>> get() = _foods
+    private val _query = MutableStateFlow("")
+    val query: StateFlow<String> get() = _query
+
+    fun onQueryChanged(newQuery: String) {
+        _query.value = newQuery
+    }
 
     fun searchFoods(query: String) {
         println(query)
