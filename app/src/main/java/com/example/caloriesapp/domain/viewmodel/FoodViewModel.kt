@@ -76,10 +76,11 @@ class FoodViewModel @Inject constructor(
         }
     }
 
-    fun clearFoods(context: Context) {
+    fun clearFoods() {
         viewModelScope.launch {
-            clearFoods(this@FoodViewModel.context)
+//            clearFoods(this@FoodViewModel.context)
             _foods.value = emptyList()
+            saveFoods(context, emptyList())
         }
     }
 

@@ -28,6 +28,7 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.outlined.Fastfood
@@ -201,14 +202,33 @@ fun FoodTrackingSection(viewModel: FoodViewModel = hiltViewModel()) {
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            Text(text = "Food List", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                Text(
+                    text = "Food List",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    modifier = Modifier.weight(1f)  // This will push the Icon to the far right
+                )
+                IconButton(onClick = { viewModel.clearFoods() }) {
+                    Icon(
+                        imageVector = Icons.Default.ClearAll,
+                        contentDescription = "Add",
+                        tint = Color.Red
+                    )
+                }
+            }
+
             LazyColumn {
                 items(foods) { food ->
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color.White, shape = RoundedCornerShape(8.dp))
-                            .padding(2.dp,2.dp)
+                            .padding(2.dp, 2.dp)
                     ) {
                         FoodTrackingItem(
                             food.name,
@@ -337,7 +357,8 @@ fun FoodTrackingItem(
             }
         }
 
-        if (swipeableState.currentValue == 1) {
+        println(swipeableState.currentValue)
+        if (swipeableState.currentValue > 0.7) {
             LaunchedEffect(Unit) {
                 onDelete()
             }
