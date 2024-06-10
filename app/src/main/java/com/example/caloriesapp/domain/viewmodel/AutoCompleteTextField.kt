@@ -35,11 +35,17 @@ fun AutoCompleteTextField(
     var expanded by remember { mutableStateOf(false) }
     val filteredSuggestions = suggestions.filter { it.contains(query, ignoreCase = true) }
 
+    if (filteredSuggestions.isEmpty()) {
+        expanded = false
+    }
+
     Box(modifier = Modifier.fillMaxWidth()) {
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = {
-                expanded = !expanded
+                if (filteredSuggestions.isNotEmpty()) {
+                    expanded = !expanded
+                }
             }
         ) {
             TextField(

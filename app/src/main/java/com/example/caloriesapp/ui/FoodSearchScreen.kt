@@ -27,21 +27,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.caloriesapp.domain.viewmodel.AutoCompleteTextField
 import com.example.caloriesapp.domain.viewmodel.FoodViewModel
 
 @Composable
-fun FoodSearchScreen(viewModel: FoodViewModel = viewModel()) {
-//    var query by remember { mutableStateOf("") }
+fun FoodSearchScreen(viewModel: FoodViewModel = hiltViewModel()) {
+
     val foods by viewModel.foods.observeAsState(emptyList())
     val focusManager = LocalFocusManager.current
-
     var totalCalories by remember { mutableStateOf(0) }
     val calorieBudget = 1750
 
     val query by viewModel.query.collectAsState()
-    val suggestions = listOf("Apple", "Banana", "Orange", "Grapes", "Pineapple")
+    val suggestions by viewModel.suggestions.collectAsState()
 
     Column(
         modifier = Modifier
@@ -58,13 +57,14 @@ fun FoodSearchScreen(viewModel: FoodViewModel = viewModel()) {
         )
         Spacer(modifier = Modifier.height(20.dp))
         AutoCompleteTextField(
-                suggestions = suggestions,
-        query = query,
+            suggestions = suggestions,
+            query = query,
         onQueryChanged = { viewModel.onQueryChanged(it) },
         onSuggestionSelected = { selectedFood ->
             viewModel.searchFoods(selectedFood)
             viewModel.onQueryChanged("")
             // clear focus if needed
+            focusManager.clearFocus(true)
         }
         )
         Spacer(modifier = Modifier.height(24.dp))
@@ -85,22 +85,22 @@ fun FoodSearchScreen(viewModel: FoodViewModel = viewModel()) {
                     elevation = 4.dp
                 ) {
                     Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = food.name.capitalize(),
-                        style = MaterialTheme.typography.h6,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colors.onSurface
-                    )
-                    Text(
-                        text = "${food.calories} cal",
-                        style = MaterialTheme.typography.body1,
-                        color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
-                    )
-                }
+                        modifier = Modifier.padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = food.name.capitalize(),
+                            style = MaterialTheme.typography.h6,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colors.onSurface
+                        )
+                        Text(
+                            text = "${food.calories} cal",
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
+                        )
+                    }
                 }
             }
         }
