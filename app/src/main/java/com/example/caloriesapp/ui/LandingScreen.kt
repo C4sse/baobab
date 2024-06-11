@@ -68,7 +68,7 @@ fun LandingScreen()  {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF8F8F8))
+            .background(Color(0xFFEAECDD))
     )
     {
         Column {
@@ -76,7 +76,8 @@ fun LandingScreen()  {
                 title = {
                     Text(text = "Calories Budget", color = Color.White)
                 },
-                backgroundColor = Color(0xFF4CAF50)
+                backgroundColor = Color(0xFF556923)
+
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -164,7 +165,7 @@ fun TodaysBudgetSection(viewModel: FoodViewModel = hiltViewModel()) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            NutrientProgress("Protein", totalProteins, 170, Color(0xFF4CAF50))
+            NutrientProgress("Protein", totalProteins, 170, Color(0xFF556923))
             NutrientProgress("Carbs", totalCabs, 170, Color(0xFFFFC107))
             NutrientProgress("Fat", totalFat, 65, Color(0xFFFF5722))
         }
@@ -216,7 +217,7 @@ fun FoodTrackingSection(viewModel: FoodViewModel = hiltViewModel()) {
                 IconButton(onClick = { viewModel.clearFoods() }) {
                     Icon(
                         imageVector = Icons.Default.ClearAll,
-                        contentDescription = "Add",
+                        contentDescription = "Expand",
                         tint = Color.Red
                     )
                 }
@@ -258,7 +259,7 @@ fun NutritionalInfo(protein: Double, fats: Double, carbs: Double) {
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(text = "Proteins")
-            Text(text = "${protein} g", color = Color(0xFF4CAF50))
+            Text(text = "${protein} g", color = Color(0xFF556923))
         }
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -345,7 +346,7 @@ fun FoodTrackingItem(
                     Icon(
                         imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                         contentDescription = "Add $name",
-                        tint = Color(0xFF4CAF50)
+                        tint = Color(0xFF556923)
                     )
                 }
             }
