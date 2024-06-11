@@ -207,7 +207,6 @@ fun NutrientProgress(name: String, value: Int, maxValue: Int, color: Color) {
 @Composable
 fun FoodTrackingSection(viewModel: FoodViewModel = hiltViewModel()) {
     val foods by viewModel.foods.observeAsState(emptyList())
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
