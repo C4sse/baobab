@@ -4,7 +4,6 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -25,8 +24,7 @@ fun CaloriePieChart(calories: Int, totalCalories: Int) {
 
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
+            .padding(bottom = 10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -55,7 +53,7 @@ fun CaloriePieChart(calories: Int, totalCalories: Int) {
                 Text(
                     text = remainingCalories.toString(),
                     color = Color.Black,
-                    fontSize = 25.sp,
+                    fontSize = 26.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(text = "Kcal Left", color = Color.Gray, fontSize = 12.sp)
