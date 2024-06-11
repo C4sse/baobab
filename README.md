@@ -91,62 +91,62 @@ The project uses several libraries to achieve its functionality:
 
 #### \`LandingScreen\`
 
-\`\`\`kotlin
+```kotlin
 @Composable
 fun LandingScreen() {
     // Implementation...
 }
-\`\`\`
+```
 
 Displays the main screen of the app including the top app bar, today's budget section, and food tracking section.
 
 #### \`TodaysBudgetSection\`
 
-\`\`\`kotlin
+```kotlin
 @Composable
 fun TodaysBudgetSection(viewModel: FoodViewModel = hiltViewModel()) {
     // Implementation...
 }
-\`\`\`
+```
 
 Displays the user's daily calorie budget and consumed calories.
 
 #### \`NutrientProgress\`
 
-\`\`\`kotlin
+```kotlin
 @Composable
 fun NutrientProgress(name: String, value: Int, maxValue: Int, color: Color) {
     // Implementation...
 }
-\`\`\`
+```
 
 Displays a progress bar for a specific nutrient (protein, carbs, fats).
 
 #### \`FoodTrackingSection\`
 
-\`\`\`kotlin
+```kotlin
 @Composable
 fun FoodTrackingSection(viewModel: FoodViewModel = hiltViewModel()) {
     // Implementation...
 }
-\`\`\`
+```
 
 Displays a list of tracked food items and allows for clearing the list.
 
 #### \`NutritionalInfo\`
 
-\`\`\`kotlin
+```kotlin
 @Composable
 fun NutritionalInfo(protein: Double, fats: Double, carbs: Double) {
     // Implementation...
 }
-\`\`\`
+```
 
 Displays the nutritional information for a food item.
 
 #### \`FoodTrackingItem\`
 
-\`\`\`kotlin
+```kotlin
 @Composable
 fun FoodTrackingItem(
     name: String,
@@ -158,7 +158,7 @@ fun FoodTrackingItem(
 ) {
     // Implementation...
 }
-\`\`\`
+```
 
 Displays a food item with swipe-to-delete functionality.
 
@@ -166,7 +166,7 @@ Displays a food item with swipe-to-delete functionality.
 
 #### \`FoodViewModel\`
 
-\`\`\`kotlin
+```kotlin
 @HiltViewModel
 class FoodViewModel @Inject constructor(
     private val repository: FoodRepository,
@@ -174,7 +174,7 @@ class FoodViewModel @Inject constructor(
 ) : ViewModel() {
     // Implementation...
 }
-\`\`\`
+```
 
 Manages the UI-related data in a lifecycle-conscious way. Interacts with \`FoodRepository\` to fetch and manage food data.
 
@@ -182,14 +182,14 @@ Manages the UI-related data in a lifecycle-conscious way. Interacts with \`FoodR
 
 #### \`FoodRepository\`
 
-\`\`\`kotlin
+```kotlin
 @Singleton
 class FoodRepository @Inject constructor(private val api: CalorieNinjasApi) {
     suspend fun getFoods(query: String): Response<NutritionResponse> {
         return api.getNutrition(query)
     }
 }
-\`\`\`
+```
 
 Handles data operations related to food items by interacting with the \`CalorieNinjasApi\`.
 
