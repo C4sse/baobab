@@ -50,13 +50,14 @@ android {
 }
 
 dependencies {
-    implementation ("androidx.compose.material:material-icons-extended:1.5.0")
-    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+    androidTestImplementation("org.robolectric:robolectric:3.0")
+    implementation("androidx.compose.material:material-icons-extended:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
     implementation("com.google.dagger:hilt-android:2.51.1")
     testImplementation("junit:junit:4.12")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
-    implementation ("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.1")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.1")
@@ -80,13 +81,18 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.9.0")
 
     // Testing dependencies
-    testImplementation ("junit:junit:4.13.2")
-    testImplementation ("org.mockito:mockito-core:3.11.2")
-    testImplementation ("org.mockito:mockito-inline:3.11.2")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
-    testImplementation ("androidx.arch.core:core-testing:2.1.0") // Add this dependency
-    androidTestImplementation ("androidx.compose.ui:ui-test-junit4:1.0.5")
-    debugImplementation ("androidx.compose.ui:ui-test-manifest:1.0.5")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.mockito:mockito-core:3.11.2")
+    testImplementation("org.mockito:mockito-inline:3.11.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.1")
+    testImplementation("androidx.arch.core:core-testing:2.1.0") // Add this dependency
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.0.5")
+    debugImplementation("androidx.compose.ui:ui-test-manifest:1.0.5")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:3.2.0")
+    testImplementation("com.google.dagger:hilt-android-testing:2.38.1")
+    kaptTest("com.google.dagger:hilt-compiler:2.51.1")
+    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
+    testImplementation ("org.robolectric:robolectric:4.6.1")
 }
 
 kapt {

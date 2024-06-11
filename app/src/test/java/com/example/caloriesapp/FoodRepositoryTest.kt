@@ -38,7 +38,7 @@ class FoodRepositoryTest {
 
     @Test
     fun `getFoods should return success`() = runTest {
-        val foodList = listOf(Food("Apple", 52f))
+        val foodList = listOf(Food(name = "Apple"))
         val response = Response.success(NutritionResponse(foodList))
 
         `when`(api.getNutrition("Apple")).thenReturn(response)

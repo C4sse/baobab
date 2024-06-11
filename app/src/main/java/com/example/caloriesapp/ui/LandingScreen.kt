@@ -57,41 +57,49 @@ import com.example.caloriesapp.domain.viewmodel.AutoCompleteTextField
 import com.example.caloriesapp.domain.viewmodel.FoodViewModel
 import kotlinx.coroutines.launch
 
+/**
+ * Composable function for the landing screen of the app.
+ */
 @Composable
-fun LandingScreen()  {
+fun LandingScreen() {
+    // Main container
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFEAECDD))
-    )
-    {
+    ) {
         Column {
+            // Top app bar with title
             TopAppBar(
-                title = {
-                    Text(text = "Calories Budget", color = Color.White)
-                },
+                title = { Text(text = "Calories Budget", color = Color.White) },
                 backgroundColor = Color(0xFF556923)
-
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Today's budget section
             TodaysBudgetSection()
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Food tracking section
             FoodTrackingSection()
         }
     }
 }
 
+/**
+ * Composable function for displaying today's budget section.
+ *
+ * @param viewModel The FoodViewModel used to retrieve food data.
+ */
 @Composable
 fun TodaysBudgetSection(viewModel: FoodViewModel = hiltViewModel()) {
     val foods by viewModel.foods.observeAsState(emptyList())
     val focusManager = LocalFocusManager.current
     var totalCalories by remember { mutableStateOf(0) }
     var totalProteins by remember { mutableStateOf(0) }
-    var totalCabs by remember { mutableStateOf(0) }
+    var totalCarbs by remember { mutableStateOf(0) }
     var totalFat by remember { mutableStateOf(0) }
     val calorieBudget = 1750
     val query by viewModel.query.collectAsState()
@@ -104,7 +112,7 @@ fun TodaysBudgetSection(viewModel: FoodViewModel = hiltViewModel()) {
             .background(Color.White, shape = RoundedCornerShape(8.dp))
             .padding(16.dp)
     ) {
-
+        // Auto-complete text field for searching food
         AutoCompleteTextField(
             suggestions = suggestions,
             query = query,
@@ -112,12 +120,14 @@ fun TodaysBudgetSection(viewModel: FoodViewModel = hiltViewModel()) {
             onSuggestionSelected = { selectedFood ->
                 viewModel.searchFoods(selectedFood)
                 viewModel.onQueryChanged("")
-                // clear focus if needed
+                // Clear focus if needed
                 focusManager.clearFocus(true)
             }
         )
     }
+
     Spacer(modifier = Modifier.height(16.dp))
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -129,26 +139,23 @@ fun TodaysBudgetSection(viewModel: FoodViewModel = hiltViewModel()) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
                 Spacer(modifier = Modifier.height(30.dp))
-
                 Text(text = "Budget", color = Color.Gray, fontWeight = FontWeight.Bold)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Spacer(modifier = Modifier.height(35.dp))
-                    Text(text = "$calorieBudget",fontSize = 26.sp, fontWeight = FontWeight.Bold)
+                    Text(text = "$calorieBudget", fontSize = 26.sp, fontWeight = FontWeight.Bold)
                     Text(text = " kcal", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 }
             }
 
-            Column(
-            ) {
+            Column {
                 // Calculate total calories whenever foods change
                 totalCalories = foods.sumOf { it.calories.toInt() }
-                totalCabs = foods.sumOf { it.carbohydrates_total_g.toInt() }
+                totalCarbs = foods.sumOf { it.carbohydrates_total_g.toInt() }
                 totalFat = foods.sumOf { it.fat_total_g.toInt() }
                 totalProteins = foods.sumOf { it.protein_g.toInt() }
                 CaloriePieChart(calories = totalCalories, totalCalories = calorieBudget)
@@ -160,13 +167,22 @@ fun TodaysBudgetSection(viewModel: FoodViewModel = hiltViewModel()) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // Display nutrient progress bars
             NutrientProgress("Protein", totalProteins, 170, Color(0xFF556923))
-            NutrientProgress("Carbs", totalCabs, 170, Color(0xFFFFC107))
+            NutrientProgress("Carbs", totalCarbs, 170, Color(0xFFFFC107))
             NutrientProgress("Fat", totalFat, 65, Color(0xFFFF5722))
         }
     }
 }
 
+/**
+ * Composable function for displaying a nutrient progress bar.
+ *
+ * @param name The name of the nutrient.
+ * @param value The current value of the nutrient.
+ * @param maxValue The maximum value of the nutrient.
+ * @param color The color of the progress bar.
+ */
 @Composable
 fun NutrientProgress(name: String, value: Int, maxValue: Int, color: Color) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -183,6 +199,11 @@ fun NutrientProgress(name: String, value: Int, maxValue: Int, color: Color) {
     }
 }
 
+/**
+ * Composable function for displaying the food tracking section.
+ *
+ * @param viewModel The FoodViewModel used to retrieve food data.
+ */
 @Composable
 fun FoodTrackingSection(viewModel: FoodViewModel = hiltViewModel()) {
     val foods by viewModel.foods.observeAsState(emptyList())
@@ -202,42 +223,41 @@ fun FoodTrackingSection(viewModel: FoodViewModel = hiltViewModel()) {
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text(
                     text = "Food List",
                     fontWeight = FontWeight.Bold,
                     fontSize = 21.sp,
                     modifier = Modifier
                         .weight(1f)
-                        .padding(bottom = 0.dp)// This will push the Icon to the far right
+                        .padding(bottom = 0.dp) // Push the Icon to the far right
                 )
                 IconButton(onClick = { viewModel.clearFoods() }) {
                     Icon(
                         imageVector = Icons.Default.ClearAll,
-                        contentDescription = "Expand",
+                        contentDescription = "Clear All",
                         tint = Color.Red
                     )
                 }
             }
 
             Spacer(modifier = Modifier.height(12.dp))
+
+            // LazyColumn to display a list of foods
             LazyColumn {
                 items(foods) { food ->
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color.White, shape = RoundedCornerShape(8.dp))
-                            .padding(2.dp, 2.dp)
+                            .padding(2.dp)
                     ) {
                         FoodTrackingItem(
-                            food.name,
-                            food.calories,
-                            500,
-                            Icons.Outlined.Fastfood,
+                            name = food.name,
+                            calories = food.calories,
+                            maxCalories = 500,
+                            icon = Icons.Outlined.Fastfood,
                             foodInfo = food,
-                            onDelete = {
-                                viewModel.deleteFood(food)
-                            }
+                            onDelete = { viewModel.deleteFood(food) }
                         )
                     }
                 }
@@ -245,6 +265,14 @@ fun FoodTrackingSection(viewModel: FoodViewModel = hiltViewModel()) {
         }
     }
 }
+
+/**
+ * Composable function for displaying nutritional information.
+ *
+ * @param protein The amount of protein in grams.
+ * @param fats The amount of fats in grams.
+ * @param carbs The amount of carbohydrates in grams.
+ */
 @Composable
 fun NutritionalInfo(protein: Double, fats: Double, carbs: Double) {
     Column(modifier = Modifier
@@ -276,7 +304,16 @@ fun NutritionalInfo(protein: Double, fats: Double, carbs: Double) {
     }
 }
 
-//swipe to delete
+/**
+ * Composable function for displaying a food tracking item with swipe to delete functionality.
+ *
+ * @param name The name of the food item.
+ * @param calories The amount of calories in the food item.
+ * @param maxCalories The maximum calories for the food item.
+ * @param icon The icon representing the food item.
+ * @param foodInfo The Food object containing detailed information.
+ * @param onDelete The function to be called when the food item is deleted.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FoodTrackingItem(
@@ -298,19 +335,11 @@ fun FoodTrackingItem(
             .fillMaxWidth()
             .background(Color.White)
             .padding(bottom = 12.dp)
-//            .swipeable(
-//                state = swipeableState,
-//                anchors = anchors,
-//                thresholds = { _, _ -> FractionalThreshold(0.3f) },
-//                orientation = Orientation.Horizontal
-//            )
             .animateContentSize()
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-//                .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
                 .background(Color.White)
                 .padding(0.dp)
                 .pointerInput(Unit) {
@@ -329,8 +358,7 @@ fun FoodTrackingItem(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { isExpanded = !isExpanded }
-                ,
+                    .clickable { isExpanded = !isExpanded },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -345,7 +373,7 @@ fun FoodTrackingItem(
                 IconButton(onClick = { isExpanded = !isExpanded }) {
                     Icon(
                         imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
-                        contentDescription = "Add $name",
+                        contentDescription = "Toggle $name",
                         tint = Color(0xFF556923)
                     )
                 }
@@ -353,12 +381,15 @@ fun FoodTrackingItem(
 
             if (isExpanded) {
                 Column(modifier = Modifier.padding(top = 8.dp)) {
-                    NutritionalInfo(protein = foodInfo.protein_g, fats = foodInfo.fat_total_g, carbs = foodInfo.carbohydrates_total_g)
+                    NutritionalInfo(
+                        protein = foodInfo.protein_g,
+                        fats = foodInfo.fat_total_g,
+                        carbs = foodInfo.carbohydrates_total_g
+                    )
                 }
             }
         }
 
-        println(swipeableState.currentValue)
         if (swipeableState.currentValue > 0.7) {
             LaunchedEffect(Unit) {
                 onDelete()
@@ -367,6 +398,9 @@ fun FoodTrackingItem(
     }
 }
 
+/**
+ * Composable function to preview the landing screen.
+ */
 @Preview(showBackground = true)
 @Composable
 fun PreviewLandingScreen() {

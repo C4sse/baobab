@@ -29,6 +29,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+/**
+ * A composable function that provides an auto-complete text field with suggestions.
+ *
+ * @param suggestions A list of suggestion strings to be displayed.
+ * @param query The current query string entered by the user.
+ * @param onQueryChanged A callback function to be invoked when the query string changes.
+ * @param onSuggestionSelected A callback function to be invoked when a suggestion is selected.
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun AutoCompleteTextField(
@@ -37,25 +45,31 @@ fun AutoCompleteTextField(
     onQueryChanged: (String) -> Unit,
     onSuggestionSelected: (String) -> Unit
 ) {
+    // State to manage the expansion of the dropdown menu
     var expanded by remember { mutableStateOf(false) }
+
+    // Filter suggestions based on the current query
     val filteredSuggestions = suggestions.filter { it.contains(query, ignoreCase = true) }
 
+    // Close the dropdown menu if there are no suggestions
     if (filteredSuggestions.isEmpty()) {
         expanded = false
     }
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(50.dp)
-        .padding(0.dp,0.dp)
-        .background(Color(0xFFF5F5F5), shape = CircleShape),
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp)
+            .padding(0.dp, 0.dp)
+            .background(Color(0xFFF5F5F5), shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.Center, // Center vertically
-            horizontalAlignment = Alignment.Start // Center horizontally if needed
+            verticalArrangement = Arrangement.Center, // Center content vertically
+            horizontalAlignment = Alignment.Start // Align content to the start horizontally
         ) {
+            // Exposed dropdown menu box for the text field and suggestions
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = {
@@ -64,6 +78,7 @@ fun AutoCompleteTextField(
                     }
                 }
             ) {
+                // TextField for entering the query
                 TextField(
                     value = query,
                     onValueChange = {
@@ -84,6 +99,8 @@ fun AutoCompleteTextField(
                     ),
                     textStyle = LocalTextStyle.current.copy(fontSize = 16.sp)
                 )
+
+                // Dropdown menu for suggestions
                 ExposedDropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
@@ -102,6 +119,8 @@ fun AutoCompleteTextField(
                 }
             }
         }
+
+        // IconButton to clear the query and perform a search
         IconButton(
             onClick = {
                 onSuggestionSelected(query)

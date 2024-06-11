@@ -1,86 +1,92 @@
 package com.example.caloriesapp.domain.viewmodel
 
+import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.Observer
 import com.example.caloriesapp.data.model.Food
 import com.example.caloriesapp.data.model.NutritionResponse
 import com.example.caloriesapp.data.repository.FoodRepository
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNull
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
-import org.mockito.ArgumentMatchers
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
+import kotlinx.coroutines.*
+import kotlinx.coroutines.test.*
+import org.junit.*
+import org.junit.runner.RunWith
+import org.mockito.InjectMocks
 import org.mockito.Mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.`when`
-import org.mockito.MockitoAnnotations
+import org.mockito.Mockito.*
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 import retrofit2.Response
 
 @ExperimentalCoroutinesApi
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [28], manifest = Config.NONE)  // Configuring Robolectric to use SDK 28
 class FoodViewModelTest {
 
     @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    val instantExecutorRule = InstantTaskExecutorRule()
+
+    private val testDispatcher = TestCoroutineDispatcher()
 
     @Mock
     private lateinit var repository: FoodRepository
 
-    private lateinit var viewModel: FoodViewModel
-
     @Mock
-    private lateinit var observer: Observer<List<Food>>
+    private lateinit var context: Context
 
-    private val testDispatcher = UnconfinedTestDispatcher()
+    @InjectMocks
+    private lateinit var viewModel: FoodViewModel
 
     @Before
     fun setUp() {
-        MockitoAnnotations.openMocks(this)
         Dispatchers.setMain(testDispatcher)
-        viewModel = FoodViewModel(repository)
-        viewModel.foods.observeForever(observer)
+        viewModel = FoodViewModel(repository, context)
     }
 
     @After
     fun tearDown() {
-        Dispatchers.resetMain() // Reset the main dispatcher to the original Main dispatcher
-        testDispatcher.cancel()
+        Dispatchers.resetMain()  // reset the main dispatcher to the original Main dispatcher
+        testDispatcher.cleanupTestCoroutines()
     }
 
     @Test
-    fun `searchFoods should update live data on success`() = runTest {
-        val foodList = listOf(Food("Apple", 52f))
-        val response = Response.success(NutritionResponse(foodList))
-
-        `when`(repository.getFoods("Apple")).thenReturn(response)
-
-        viewModel.searchFoods("Apple")
-
-        verify(observer).onChanged(foodList)
-        assertEquals(foodList, viewModel.foods.value)
+    fun `test initial state`() = runBlockingTest {
+        assertTrue(viewModel.foods.value.isNullOrEmpty())
+        assertTrue(viewModel.suggestions.value.isEmpty())
     }
 
     @Test
-    fun `searchFoods should not update live data on error`() = runTest {
-        val response = Response.error<NutritionResponse>(
-            400,
-            okhttp3.ResponseBody.create(null, "Error")
-        )
+    fun `test searchFoods updates foods and suggestions`() = runBlockingTest {
+        val mockFoods = listOf(Food(name = "Apple", calories = 52.0))
+        val mockResponse = Response.success(NutritionResponse(mockFoods))
 
-        `when`(repository.getFoods("Apple")).thenReturn(response)
+        `when`(repository.getFoods("Apple")).thenReturn(mockResponse)
 
         viewModel.searchFoods("Apple")
 
-        verify(observer, never()).onChanged(ArgumentMatchers.anyList())
-        assertNull(viewModel.foods.value)
+        val updatedFoods = viewModel.foods.value
+        val updatedSuggestions = viewModel.suggestions.value
+
+        assertEquals(1, updatedFoods?.size)
+        assertEquals("Apple", updatedFoods?.get(0)?.name)
+        assertTrue(updatedSuggestions.contains("Apple"))
+    }
+
+    @Test
+    fun `test clearFoods clears foods`() = runBlockingTest {
+        viewModel.clearFoods()
+        val updatedFoods = viewModel.foods.value
+        assertTrue(updatedFoods.isNullOrEmpty())
+    }
+
+    @Test
+    fun `test deleteFood removes food`() = runBlockingTest {
+        val mockFood = Food(name = "Apple", calories = 52.0)
+        viewModel.onQueryChanged("Apple")
+        viewModel.searchFoods("Apple")
+        viewModel.deleteFood(mockFood)
+
+        val updatedFoods = viewModel.foods.value
+        assertTrue(updatedFoods.isNullOrEmpty())
     }
 }

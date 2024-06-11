@@ -15,7 +15,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             CaloriesAppTheme {
                 Surface(color = MaterialTheme.colors.background) {
-                   // FoodSearchScreen()
                     LandingScreen()
                 }
             }
