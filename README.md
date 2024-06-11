@@ -27,9 +27,9 @@ Follow these instructions to get a copy of the project running on your local mac
 
 1. **Clone the repository**:
 
-    \`\`\`bash
-    git clone https://github.com/yourusername/calorie-tracking-app.git
-    \`\`\`
+    ```bash
+    git clone https://github.com/C4sse/baobab
+    ```
 
 2. **Open the project in Android Studio**:
 
